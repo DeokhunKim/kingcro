@@ -25,6 +25,11 @@ def get_window_boundary(x, y, button, pressed):
         ROI_SET = True
         WINDOW.initialize(WINDOW)
 
+def print_coord(x, y, button, pressed):
+    if not pressed:
+        return False
+    print(x, y)
+
 with mouse.Listener(
        on_click=get_window_boundary) as listener:
     listener.join()

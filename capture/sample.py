@@ -27,7 +27,7 @@ with mouse.Listener(
 
 
 # input command 받는다
-#   - q: 종료
+#   - q: 종료 
 #   -
 while True:
     if ROI_SET:

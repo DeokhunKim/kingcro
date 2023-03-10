@@ -1,1 +1,1 @@
-wait_key_interval = 100
+wait_key_interval = 1000

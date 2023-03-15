@@ -9,6 +9,7 @@ from capture import img_compare
 
 
 def run():
+    '''
     evan_empty = cv2.imread('evan_empty.png')
     evan_noise = cv2.imread('evan_noise.png')
     evan_noise_nohp = cv2.imread('evan_noise_nohp.png')
@@ -21,6 +22,15 @@ def run():
     compare_and_view(evan_noise_nohp, t2, '3')
     compare_and_view(evan_noise_nohp, t3, '4')
     compare_and_view(evan_noise_nohp, t4, '5')
+    '''
+    back = cv2.imread('find-object-game-template.jpeg')
+    normal = cv2.imread('티라노_normal.png')
+    big = cv2.imread('티라노_big.png')
+    small = cv2.imread('티라노_small.png')
+
+    compare_and_view(back, normal, '1')
+    compare_and_view(back, big, '2')
+    compare_and_view(back, small, '3')
 
 
     cv2.waitKey(0)
@@ -31,7 +41,8 @@ def run():
 
 def compare_and_view(image1, image2, name):
     #score = compare_ssim(image1, image2)
-    score = matchTemplate(image1, image2, cv2.TM_SQDIFF_NORMED)
+    score = matchTemplate(image1, image2, cv2.TM_CCOEFF_NORMED)
+    #score = unknown(image1, image2)
     print(score)
 
     if(image1.shape[0] != image2.shape[0]):
@@ -73,6 +84,32 @@ def matchTemplate(image1, image2, method):
         match_val = max_val
 
     return match_val
+
+
+def unknown(image1, image2):
+    imgs = []
+    imgs.append(image1)
+    imgs.append(image2)
+    hists = []
+    for img in imgs:
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        hist = cv2.calcHist([hsv], [0, 1], None, [180, 256], [0, 180, 0, 256])
+        cv2.normalize(hist, hist, 0, 1, cv2.NORM_MINMAX)
+        hists.append(hist)
+    query = hists[0]
+    # methods = ['CORREL', 'CHISQR', 'INTERSECT', 'BHATTACHARYYA', 'EMD']
+    methods = ['BHATTACHARYYA']
+
+    for index, name in enumerate(methods):
+        #print('%-10s' % name)
+        for i, histogram in enumerate(hists):
+            ret = cv2.compareHist(query, histogram, index)
+
+            if index == cv2.HISTCMP_INTERSECT:
+                ret = ret / np.sum(query)
+            print("img%d :%7.2f" % (i + 1, ret))
+            if i == 1:
+                return ret
 
 
 

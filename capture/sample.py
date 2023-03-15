@@ -60,15 +60,22 @@ while True:
             break
 
         # Get Status
-        text_shape = np.zeros_like(image, np.uint8)
-        if img_compare.check_waiting(prev_image, image):
-            cv2.putText(out, "Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        else:
-            cv2.putText(out, "Not Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+        #text_shape = np.zeros_like(image, np.uint8)
+        #if img_compare.check_waiting(prev_image, image):
+        #    cv2.putText(out, "Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+        #else:
+        #    cv2.putText(out, "Not Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
+        evan = cv2.imread('/Users/thekoon/development/python/kingcro/resource/captureimg/에반1.png', cv2.IMREAD_COLOR)
+
+
+
+
+        cv2.imshow("image2", evan)
 
         # Display
         cv2.imshow("image", out)  # 화면에 표시 안 할거면 해당 라인 주석
+
 
         prev_image = image
 

@@ -5,6 +5,7 @@ import numpy as np
 from capture import settings
 from capture import window
 from capture import img_compare
+from capture.tune.tune import evan_test
 
 # Global Definition
 ROI_SET = False
@@ -50,8 +51,6 @@ while True:
         out = image.copy()
         alpha = 0.5
         mask = WINDOW.shapes.astype(bool)
-        # 가이드컬러
-        out[mask] = cv2.addWeighted(image, alpha, WINDOW.shapes, 1 - alpha, 0)[mask]
 
         # Key Input
         key = cv2.waitKey(settings.wait_key_interval)
@@ -61,21 +60,20 @@ while True:
 
         # Get Status
         #text_shape = np.zeros_like(image, np.uint8)
-        #if img_compare.check_waiting(prev_image, image):
-        #    cv2.putText(out, "Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        #else:
-        #    cv2.putText(out, "Not Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-
-        evan = cv2.imread('/Users/thekoon/development/python/kingcro/resource/captureimg/에반1.png', cv2.IMREAD_COLOR)
-
+        if img_compare.check_waiting(prev_image, image):
+            cv2.putText(out, "Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            evan_test(out, WINDOW.HEIGHT, WINDOW.WIDTH)
+        else:
+            cv2.putText(out, "Not Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
 
 
-        cv2.imshow("image2", evan)
+
+        # 가이드컬러
+        #out[mask] = cv2.addWeighted(image, alpha, WINDOW.shapes, 1 - alpha, 0)[mask]
 
         # Display
         cv2.imshow("image", out)  # 화면에 표시 안 할거면 해당 라인 주석
-
 
         prev_image = image
 

@@ -7,24 +7,27 @@ from capture import settings
 from capture import window
 from capture import img_compare
 
-evan1 = cv2.imread('/Users/thekoon/development/python/kingcro/capture/tune/newevan/evan_1.png', cv2.COLOR_BGR2RGB)
-evan2 = cv2.imread('/Users/thekoon/development/python/kingcro/capture/tune/newevan/evan_2.png', cv2.COLOR_BGR2RGB)
-evan3 = cv2.imread('/Users/thekoon/development/python/kingcro/capture/tune/newevan/evan_3.png', cv2.COLOR_BGR2RGB)
-evan4 = cv2.imread('/Users/thekoon/development/python/kingcro/capture/tune/newevan/evan_4.png', cv2.COLOR_BGR2RGB)
-evan5 = cv2.imread('/Users/thekoon/development/python/kingcro/capture/tune/newevan/evan_5.png', cv2.COLOR_BGR2RGB)
-evan6 = cv2.imread('/Users/thekoon/development/python/kingcro/capture/tune/newevan/evan_6.png', cv2.COLOR_BGR2RGB)
+evan1 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_1.png', cv2.COLOR_BGR2RGB)
+evan2 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_2.png', cv2.COLOR_BGR2RGB)
+evan3 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_3.png', cv2.COLOR_BGR2RGB)
+evan4 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_4.png', cv2.COLOR_BGR2RGB)
+evan5 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_5.png', cv2.COLOR_BGR2RGB)
+evan6 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_6.png', cv2.COLOR_BGR2RGB)
 is_first = True
+
 def evan_test(image, HEIGHT, WIDTH):
     global evan1,evan2,evan3,evan4,evan5,evan6,is_first
-    if is_first:
-        evan1 = cv2.resize(evan1, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-        evan2 = cv2.resize(evan2, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-        evan3 = cv2.resize(evan3, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-        evan4 = cv2.resize(evan4, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-        evan5 = cv2.resize(evan5, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-        evan6 = cv2.resize(evan6, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-        is_first = False
-        print('resize complete')
+    '''
+   if is_first:
+       evan1 = cv2.resize(evan1, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
+       evan2 = cv2.resize(evan2, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
+       evan3 = cv2.resize(evan3, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
+       evan4 = cv2.resize(evan4, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
+       evan5 = cv2.resize(evan5, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
+       evan6 = cv2.resize(evan6, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
+       is_first = False
+       print('resize complete')
+   '''
 
     find_template(evan1, image, 'ev1')
     find_template(evan2, image, 'ev2')
@@ -100,7 +103,7 @@ def compare_and_view(image1, image2, name):
     cv2.imshow(name, hconcat)
 
 
-def find_template(template, image, text, threshold=0.20):
+def find_template(template, image, text, threshold=0.23):
 
     method = cv2.TM_SQDIFF_NORMED
     method = cv2.TM_SQDIFF_NORMED
@@ -116,10 +119,6 @@ def find_template(template, image, text, threshold=0.20):
         cv2.putText(image, text, (top_left[0], bottom_right[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
     return min_val
-
-
-
-
 
 
 

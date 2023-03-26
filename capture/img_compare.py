@@ -10,4 +10,4 @@ def check_waiting(img1, img2):
     (score, diff) = ssim(grayA, grayB, full=True)
     # diff = (diff * 255).astype("uint8")
     print("SSIM: {}".format(score))
-    return score > 0.95
+    return score > 0.965

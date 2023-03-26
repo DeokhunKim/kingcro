@@ -62,7 +62,7 @@ while True:
         #text_shape = np.zeros_like(image, np.uint8)
         if img_compare.check_waiting(prev_image, image):
             cv2.putText(out, "Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-            evan_test(out, WINDOW.HEIGHT, WINDOW.WIDTH)
+            evan_test(out, WINDOW)
         else:
             cv2.putText(out, "Not Ready", (0, WINDOW.HEIGHT), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 

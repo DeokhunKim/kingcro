@@ -3,40 +3,88 @@ import cv2
 from skimage.metrics import structural_similarity as ssim
 from pynput import mouse
 import numpy as np
-from capture import settings
-from capture import window
-from capture import img_compare
-
-evan1 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_1.png', cv2.COLOR_BGR2RGB)
-evan2 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_2.png', cv2.COLOR_BGR2RGB)
-evan3 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_3.png', cv2.COLOR_BGR2RGB)
-evan4 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_4.png', cv2.COLOR_BGR2RGB)
-evan5 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_5.png', cv2.COLOR_BGR2RGB)
-evan6 = cv2.imread('/Users/thekoon/IntelliJ/_project/kingcro/capture/tune/newevan/evan_6.png', cv2.COLOR_BGR2RGB)
-is_first = True
-
-def evan_test(image, HEIGHT, WIDTH):
-    global evan1,evan2,evan3,evan4,evan5,evan6,is_first
-    '''
-   if is_first:
-       evan1 = cv2.resize(evan1, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-       evan2 = cv2.resize(evan2, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-       evan3 = cv2.resize(evan3, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-       evan4 = cv2.resize(evan4, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-       evan5 = cv2.resize(evan5, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-       evan6 = cv2.resize(evan6, (int(WIDTH * 80 / 1125), int(HEIGHT * 123 / 2436)))
-       is_first = False
-       print('resize complete')
-   '''
-
-    find_template(evan1, image, 'ev1')
-    find_template(evan2, image, 'ev2')
-    find_template(evan3, image, 'ev3')
-    find_template(evan4, image, 'ev4')
-    find_template(evan5, image, 'ev5')
-    find_template(evan6, image, 'ev6')
+from capture.settings import find_object
 
 
+
+print('Load find object image.')
+for o in find_object:
+    o.image = cv2.imread(o.imgurl, cv2.COLOR_BGR2RGB)
+
+
+def evan_test(image, WINDOW):
+    highscore_result_dict = {}
+    for o in find_object:
+        data = new_find_template(o, image)
+        if not data[0]:
+            continue
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(data[1])
+        center_loc = (min_loc[0] + max_loc[0]) / 2, (min_loc[1] + max_loc[1]) / 2
+        # 화면 절반 위쪽은 제외한다(엔트리만 찾자)
+        if min_loc[1] < WINDOW.HEIGHT / 2:
+            continue
+
+        # 찾은 바운더리에 다른게 있으면 비교해서 더 정확한걸 넣는다
+        is_overlap = False
+        for object_text in list(highscore_result_dict.keys()):
+            r = highscore_result_dict[object_text]
+            if is_in_boundary(center_loc, r):
+                if min_val < cv2.minMaxLoc(r)[0]:
+                    del highscore_result_dict[object_text]
+                    highscore_result_dict[o.text] = data[1]
+                is_overlap = True
+                break
+        if not is_overlap:
+            highscore_result_dict[o.text] = data[1]
+
+
+    for object_text, r in highscore_result_dict.items():
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(r)
+        # TODO 여기는 찾는건 나중에 dict로 바꾸자
+        for object in find_object:
+            if object.text == object_text:
+                o = object
+                break
+        template_h, template_w = o.image.shape[:-1]
+        top_left = min_loc
+        bottom_right = (top_left[0] + template_w, top_left[1] + template_h)
+        cv2.rectangle(image, top_left, bottom_right, (0, 255, 0), 3)
+        cv2.putText(image, o.text, (top_left[0], bottom_right[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+
+
+def is_in_boundary(center_loc, result):
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    if max_loc[0] < center_loc[0] < min_loc[0] and min_loc[1] < center_loc[1] < max_loc[1]:
+        return True
+    else:
+        return False
+
+
+
+
+
+
+
+def new_find_template(object, image):
+    method = cv2.TM_SQDIFF_NORMED
+
+    result = cv2.matchTemplate(image, object.image, method, mask=None)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    if min_val < object.threshold:
+        return (True, result)
+    else:
+        return (False, result)
+
+
+
+
+
+
+
+    ##############################################
+###########   legacy   #######################
+##############################################
 def run():
     '''
     evan_empty = cv2.imread('evan_empty.png')
@@ -103,9 +151,7 @@ def compare_and_view(image1, image2, name):
     cv2.imshow(name, hconcat)
 
 
-def find_template(template, image, text, threshold=0.23):
-
-    method = cv2.TM_SQDIFF_NORMED
+def find_template(template, image, text, threshold=0.15):
     method = cv2.TM_SQDIFF_NORMED
 
     result = cv2.matchTemplate(image, template, method, mask=None)

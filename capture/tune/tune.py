@@ -3,18 +3,18 @@ import cv2
 from skimage.metrics import structural_similarity as ssim
 from pynput import mouse
 import numpy as np
-from capture.settings import find_object
+from capture.settings import find_object_entry
 
 
 
 print('Load find object image.')
-for o in find_object:
+for o in find_object_entry:
     o.image = cv2.imread(o.imgurl, cv2.COLOR_BGR2RGB)
 
 
-def evan_test(image, WINDOW):
+def find_entry(image, WINDOW):
     highscore_result_dict = {}
-    for o in find_object:
+    for o in find_object_entry:
         data = new_find_template(o, image)
         if not data[0]:
             continue
@@ -41,7 +41,7 @@ def evan_test(image, WINDOW):
     for object_text, r in highscore_result_dict.items():
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(r)
         # TODO 여기는 찾는건 나중에 dict로 바꾸자
-        for object in find_object:
+        for object in find_object_entry:
             if object.text == object_text:
                 o = object
                 break

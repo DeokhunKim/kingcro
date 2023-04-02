@@ -9,5 +9,5 @@ def check_waiting(img1, img2):
     grayB = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     (score, diff) = ssim(grayA, grayB, full=True)
     # diff = (diff * 255).astype("uint8")
-    print("[DEBUG] SSIM: {}".format(score))
+    #print("[DEBUG] SSIM: {}".format(score))
     return score > settings.waiting_checker_limit

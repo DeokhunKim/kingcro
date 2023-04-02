@@ -32,9 +32,7 @@ def initialize(self):
     here_entry_boundary_width = here_entry_boundary[1][0] - here_entry_boundary[0][0]
     here_entry_boundary_height = here_entry_boundary[1][1] - here_entry_boundary[0][1]
     here_entry_shapes = []
-    print(here_entry_boundary)
-    print(here_entry_boundary_width)
-    print(here_entry_boundary_height)
+
     for i in range(2):
         for j in range(7):
             cv2.rectangle(shapes,

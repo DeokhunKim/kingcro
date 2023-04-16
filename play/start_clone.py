@@ -67,7 +67,6 @@ while True:
             print("c")
             msctl.click_start_round(WINDOW)
         elif key == ord('p'):
-            print("c")
             msctl.current_mouse_position(WINDOW)
 
 

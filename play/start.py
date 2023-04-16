@@ -7,6 +7,7 @@ import window
 import waiting_checker
 import detector
 import mouse_control as msctl
+import action
 
 # Global Definition
 ROI_SET = False
@@ -61,6 +62,8 @@ while True:
         elif key == ord('s'):
             msctl.click_start_round(WINDOW)
             ROUND = ROUND + 1
+        elif key == ord('p'):
+            msctl.current_mouse_position(WINDOW)
 
         # Get Status
         #text_shape = np.zeros_like(image, np.uint8)
@@ -75,7 +78,10 @@ while True:
                 # 필요하다면 수락, 아니라면 거절
                 status = 'Devil''s propose'
                 print(f'[INFO][Round_{ROUND}] Devil''s propose')
-                detector.find_object(out, WINDOW, 'devil_item')
+                action.action_devil(
+                    detector.find_object(out, WINDOW, 'devil_item'), WINDOW
+                )
+
 
             # 장비 제련:
             elif stage == 'reforge':
@@ -84,7 +90,10 @@ while True:
                 # 다른 라운드라면 라운드별 점수?
                 status = 'Equipment reforging'
                 print(f'[INFO][Round_{ROUND}] Equipment reforging')
-                detector.find_object(out, WINDOW, 'reforge_item')
+
+                action.action_reforge(
+                    detector.find_object(out, WINDOW, 'reforge_item'), WINDOW
+                )
 
             # 상인 방문
             elif stage == 'trader':
@@ -96,6 +105,10 @@ while True:
             # 대기 상태
             elif stage == 'start1':
                 print(f'[INFO][Round_{ROUND}] Rearrange time.')
+                # 1라운드
+                if ROUND == 1:
+                    # 소환 하고 합치고 배치
+                    print('')
 
             # 대기 상태인데 화면이 상단으로 올라감
             elif stage == 'start2':

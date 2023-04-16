@@ -18,7 +18,8 @@ for o in object_reforge_item:
 for o in object_trader_item:
     o.image = cv2.imread(o.imgurl, cv2.COLOR_BGR2RGB)
 
-def find_object(image, WINDOW, target :str):
+
+def find_object(image, WINDOW, target: str):
     target_object = None
     if target == 'entry':
         target_object = object_entry
@@ -34,7 +35,7 @@ def find_object(image, WINDOW, target :str):
         if not data[0]:
             continue
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(data[1])
-        center_loc = (min_loc[0] + max_loc[0]) / 2, (min_loc[1] + max_loc[1]) / 2
+        center_loc = (min_loc[0] + o.image.shape[:-1][1]/2), (min_loc[1] + o.image.shape[:-1][0]/2)
         # 화면 절반 위쪽은 제외한다(엔트리만 찾자)
         #if min_loc[1] < WINDOW.HEIGHT / 3:
         #    continue
@@ -52,24 +53,32 @@ def find_object(image, WINDOW, target :str):
         if not is_overlap:
             highscore_result_dict[o.text] = data[1]
 
-
+    result = []
     for object_text, r in highscore_result_dict.items():
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(r)
-        # TODO 여기는 찾는건 나중에 dict로 바꾸자
+        # TODO 여기는 찾는건 나중에 dict 로 바꾸자
         for object in target_object:
             if object.text == object_text:
                 o = object
                 break
+
+        # Get Location
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(r)
+        # Display
         template_h, template_w = o.image.shape[:-1]
         top_left = min_loc
         bottom_right = (top_left[0] + template_w, top_left[1] + template_h)
         cv2.rectangle(image, top_left, bottom_right, (0, 255, 0), 3)
         cv2.putText(image, o.text, (top_left[0], bottom_right[1]), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
 
+        # Store
+        result.append((o, min_loc))
+
+    return result
+
 
 def is_in_boundary(center_loc, result):
     min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-    if max_loc[0] < center_loc[0] < min_loc[0] and min_loc[1] < center_loc[1] < max_loc[1]:
+    if min_loc[0] < center_loc[0] < min_loc[0] + 50 and min_loc[1] < center_loc[1] < min_loc[1] + 50:
         return True
     else:
         return False
